@@ -39,7 +39,7 @@ namespace MultiThreading.Task3.MatrixMultiplier.Tests
                 
                 sw.Restart();
 
-                matricesMultiplier.Multiply(firstMatrix, secondMatrix);
+                matricesParallelMultiplier.Multiply(firstMatrix, secondMatrix);
 
                 var t2 = sw.ElapsedMilliseconds;
                 if (t1 > t2)

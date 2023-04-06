@@ -6,6 +6,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +14,8 @@ namespace MultiThreading.Task5.Threads.SharedCollection
 {
     class Program
     {
+        private static readonly object SyncObject = new object();
+        private static List<int> Collection = new List<int>();
         static void Main(string[] args)
         {
             Console.WriteLine("5. Write a program which creates two threads and a shared collection:");
@@ -20,20 +23,42 @@ namespace MultiThreading.Task5.Threads.SharedCollection
             Console.WriteLine("Use Thread, ThreadPool or Task classes for thread creation and any kind of synchronization constructions.");
             Console.WriteLine();
 
-            var sharedList = new List<int>();
+            Thread t1 = new Thread(AddItem);
+            Thread t2 = new Thread(PrintItems);
 
-            for (int i = 0; i <= 10; i++)
-            {
-                Thread t1 = new Thread(() => sharedList.Add(i));
-                t1.Start();
-                t1.Join();
-                Console.WriteLine("Printing values.");
-                Thread t2 = new Thread(() => sharedList.ForEach((n) => Console.WriteLine(n)));
-                t2.Start();
-                t2.Join();
-            }
+            t1.Start();
+            t2.Start();
+            t1.Join();
+            t2.Join();
 
             Console.ReadLine();
+        }
+
+        private static void AddItem()
+        {
+            lock(SyncObject)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Collection.Add(i);
+                    Monitor.Pulse(SyncObject);
+                    Monitor.Wait(SyncObject);
+                }
+            }
+        }
+
+        private static void PrintItems()
+        {
+            lock(SyncObject)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Collection.ForEach(num => Console.WriteLine(num));
+                    Console.WriteLine("------------");
+                    Monitor.Pulse(SyncObject);
+                    Monitor.Wait(SyncObject);
+                }
+            }
         }
     }
 }

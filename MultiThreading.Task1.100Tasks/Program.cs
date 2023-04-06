@@ -32,11 +32,12 @@ namespace MultiThreading.Task1._100Tasks
 
             for(int i = 0; i < tasks.Length; i++)
             {
+                int taskNumber = i;
                 tasks[i] = Task.Run(() =>
                 {
                     for (int j = 1; j < 1001; j++)
                     {
-                        Output(i, j);
+                        Output(taskNumber, j);
                     }
                 });
             }

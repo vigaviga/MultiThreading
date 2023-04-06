@@ -35,12 +35,12 @@ namespace MultiThreading.Task6.Continuation
                 
             }, cts.Token);
 
-            Task ContinueInAnyCaseTask = ParentTask.ContinueWith(t =>
+            Task ContinueInAnyCaseTask = ParentTask.ContinueWith((x,y) =>
             {
                 Thread.Sleep(2000);
                 Console.WriteLine("Inside the task that will continue in any case.");
-            });
-
+            }, new Person() { Id = 1 }) ;
+            
             Task ContinueInNoSuccessCaseTask = ParentTask.ContinueWith(t =>
             {
                 Thread.Sleep(2000);
@@ -60,5 +60,9 @@ namespace MultiThreading.Task6.Continuation
 
             Console.ReadLine();
         }
+    }
+    class Person
+    {
+        public int Id { get; set; }
     }
 }
